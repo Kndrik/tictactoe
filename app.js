@@ -19,9 +19,13 @@ const gameState = (() => {
     const changeRound = () => {
         currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
         roundPlayed += 1;
+        if (gameBoard.checkForWinner() !== '') {
+            gameBoard.checkForWinner() === playerOne.getMark() ? console.log('Player one won!') : console.log('Player two won!');
+            return;
+        }
 
         if (roundPlayed >= 9) {
-            // STOP GAME
+            console.log(`It's a tie!`);
         }
     }
 
@@ -30,7 +34,7 @@ const gameState = (() => {
         roundPlayed = 0;
         startGame();
     }
-    
+
     document.querySelector('.bottom button').addEventListener('click', restartGame);
 
     const getCurrentPlayer = () => currentPlayer;
@@ -60,14 +64,36 @@ const gameBoard = (() => {
     const getCell = (id) => boardArray[id-1];
 
     const checkForWinner = () => {
-
+        const possibleWins = [[1,2,3],
+                              [4,5,6],
+                              [7,8,9],
+                              [1,5,9],
+                              [7,5,3],
+                              [1,4,7],
+                              [2,5,8],
+                              [3,6,9]];
+        for (let i = 0; i < possibleWins.length; i++) {
+            let mark = boardArray[possibleWins[i][0]-1].firstChild.textContent;
+            let winner = true;
+            for (let j = 0; j < possibleWins[i].length; j++) {
+                if (mark !== boardArray[possibleWins[i][j]-1].firstChild.textContent) {
+                    winner = false;
+                    continue;
+                }
+            }
+            if (winner === true) {
+                return mark;
+            }
+        }
+        return '';
     };
 
     return {
         markCell,
         cleanBoard,
         getBoard,
-        getCell
+        getCell,
+        checkForWinner
     }
 })();
 
