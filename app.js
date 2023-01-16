@@ -7,24 +7,37 @@ const playerFactory = (name, mark) => {
     };
 }
 
-const playerOne = playerFactory('Jim', 'X');
-const playerTwo = playerFactory('Dwight', 'O');
-
 const gameState = (() => {
+    let playerOne = playerFactory('Player 1', 'X');
+    let playerTwo = playerFactory('Player 2', 'O');
     let currentPlayer;
+    let roundPlayed = 0;
     const startGame = () => {
         currentPlayer = playerOne;
     }
 
-    const changePlayer = () => {
+    const changeRound = () => {
         currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
+        roundPlayed += 1;
+
+        if (roundPlayed >= 9) {
+            // STOP GAME
+        }
     }
+
+    const restartGame = () => {
+        gameBoard.cleanBoard();
+        roundPlayed = 0;
+        startGame();
+    }
+    
+    document.querySelector('.bottom button').addEventListener('click', restartGame);
 
     const getCurrentPlayer = () => currentPlayer;
 
     return {
         startGame,
-        changePlayer,
+        changeRound,
         getCurrentPlayer
     }
 })();
@@ -46,6 +59,10 @@ const gameBoard = (() => {
 
     const getCell = (id) => boardArray[id-1];
 
+    const checkForWinner = () => {
+
+    };
+
     return {
         markCell,
         cleanBoard,
@@ -64,7 +81,7 @@ const gameController = (() => {
         if (cell.textContent !== '') return;
         const player = gameState.getCurrentPlayer();
         gameBoard.markCell(id, player);
-        gameState.changePlayer();
+        gameState.changeRound();
     }
     
     return {
