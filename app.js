@@ -8,35 +8,52 @@ const playerFactory = (name, mark) => {
 }
 
 const gameState = (() => {
-    let playerOne = playerFactory('Player 1', 'X');
-    let playerTwo = playerFactory('Player 2', 'O');
+    let playerOne = playerFactory('Jim', 'X');
+    let playerTwo = playerFactory('Dwight', 'O');
     let currentPlayer;
     let roundPlayed = 0;
     let gameEnded = false;
     const resultDiv = document.querySelector('.result');
-    const startGame = () => {
+    const playerTurn = document.querySelector('.player-turn');
+
+    const startGame = (event) => {
+        event.preventDefault();
+        const playerOneName = document.querySelector('input[name="playerOne"]').value;
+        const playerTwoName = document.querySelector('input[name="playerTwo"]').value;
+        playerOne = playerFactory(playerOneName, 'X');
+        playerTwo = playerFactory(playerTwoName, 'O');
+
+        gameBoard.showGrid();
+
         currentPlayer = playerOne;
+        playerTurn.textContent = `${currentPlayer.getName()}'s turn`;
     }
+
+    let form = document.querySelector('form');
+    form.onsubmit = startGame;
 
     const displayWinner = (player) => {
         resultDiv.textContent = gameBoard.checkForWinner() === playerOne.getMark() ? `${playerOne.getName()} won!` : `${playerTwo.getName()} won!`;
     }
 
-    const displayTie = () => resultDiv.textContent = `It's a tie`;
+    const displayTie = () => resultDiv.textContent = `It's a tie.`;
 
     const hasEnded = () => gameEnded;
 
     const changeRound = () => {
         currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
+        playerTurn.textContent = `${currentPlayer.getName()}'s turn`;
         roundPlayed += 1;
 
         if (gameBoard.checkForWinner() !== '') {
             displayWinner();
             gameEnded = true;
+            playerTurn.textContent = '';
             return;
         } else if (roundPlayed >= 9) {
             displayTie();
             gameEnded = true;
+            playerTurn.textContent = '';
         }
     }
 
@@ -45,10 +62,16 @@ const gameState = (() => {
         gameBoard.cleanBoard();
         roundPlayed = 0;
         gameEnded = false;
-        startGame();
+        currentPlayer = playerOne;
+        playerTurn.textContent = `${currentPlayer.getName()}'s turn`;
+    }
+    
+    const changePlayers = () => {
+        gameBoard.showForm();
     }
 
-    document.querySelector('.bottom button').addEventListener('click', restartGame);
+    document.querySelector('.bottom button.reset').addEventListener('click', restartGame);
+    document.querySelector('.bottom button.change-players').addEventListener('click', changePlayers);
 
     const getCurrentPlayer = () => currentPlayer;
 
@@ -104,12 +127,33 @@ const gameBoard = (() => {
         return '';
     };
 
+    const showForm = () => {
+        document.querySelector('.form-container').hidden = false;
+
+        document.querySelector('.player-turn').hidden = true;
+        document.querySelector('.grid-parent').hidden = true;
+        document.querySelector('.bottom button.reset').hidden = true;
+        document.querySelector('.bottom button.change-players').hidden = true;
+    }
+
+    const showGrid = () => {
+        document.querySelector('.form-container').hidden = true;
+
+        document.querySelector('.player-turn').hidden = false;
+        document.querySelector('.grid-parent').hidden = false;
+        document.querySelector('.bottom button.reset').hidden = false;
+        document.querySelector('.bottom button.change-players').hidden = false;
+
+    }
+
     return {
         markCell,
         cleanBoard,
         getBoard,
         getCell,
-        checkForWinner
+        checkForWinner,
+        showForm,
+        showGrid
     }
 })();
 
@@ -132,4 +176,4 @@ const gameController = (() => {
     }
 })();
 
-gameState.startGame();
+//gameState.startGame();
