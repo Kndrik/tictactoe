@@ -24,9 +24,11 @@ const gameState = (() => {
         playerTwo = playerFactory(playerTwoName, 'O');
 
         gameBoard.showGrid();
+        gameBoard.cleanBoard();
 
         currentPlayer = playerOne;
         playerTurn.textContent = `${currentPlayer.getName()}'s turn`;
+        resultDiv.textContent = '';
     }
 
     let form = document.querySelector('form');
