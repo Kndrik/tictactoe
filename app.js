@@ -134,6 +134,7 @@ const gameBoard = (() => {
         document.querySelector('.grid-parent').hidden = true;
         document.querySelector('.bottom button.reset').hidden = true;
         document.querySelector('.bottom button.change-players').hidden = true;
+        document.querySelector('.result').hidden = true;
     }
 
     const showGrid = () => {
@@ -143,6 +144,7 @@ const gameBoard = (() => {
         document.querySelector('.grid-parent').hidden = false;
         document.querySelector('.bottom button.reset').hidden = false;
         document.querySelector('.bottom button.change-players').hidden = false;
+        document.querySelector('.result').hidden = false;
 
     }
 
