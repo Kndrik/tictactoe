@@ -1,6 +1,8 @@
 .page-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
 }
 
 .content {
@@ -69,4 +71,10 @@ h1 {
     margin: 0;
     margin-bottom: 15px;
     padding: 0;
+}
+
+.result {
+    margin-top: 20px;
+    font-size: 42px;
+    font-weight: bold;
 }

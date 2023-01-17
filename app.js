@@ -12,26 +12,39 @@ const gameState = (() => {
     let playerTwo = playerFactory('Player 2', 'O');
     let currentPlayer;
     let roundPlayed = 0;
+    let gameEnded = false;
+    const resultDiv = document.querySelector('.result');
     const startGame = () => {
         currentPlayer = playerOne;
     }
 
+    const displayWinner = (player) => {
+        resultDiv.textContent = gameBoard.checkForWinner() === playerOne.getMark() ? `${playerOne.getName()} won!` : `${playerTwo.getName()} won!`;
+    }
+
+    const displayTie = () => resultDiv.textContent = `It's a tie`;
+
+    const hasEnded = () => gameEnded;
+
     const changeRound = () => {
         currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
         roundPlayed += 1;
-        if (gameBoard.checkForWinner() !== '') {
-            gameBoard.checkForWinner() === playerOne.getMark() ? console.log('Player one won!') : console.log('Player two won!');
-            return;
-        }
 
-        if (roundPlayed >= 9) {
-            console.log(`It's a tie!`);
+        if (gameBoard.checkForWinner() !== '') {
+            displayWinner();
+            gameEnded = true;
+            return;
+        } else if (roundPlayed >= 9) {
+            displayTie();
+            gameEnded = true;
         }
     }
 
     const restartGame = () => {
+        resultDiv.textContent = '';
         gameBoard.cleanBoard();
         roundPlayed = 0;
+        gameEnded = false;
         startGame();
     }
 
@@ -42,7 +55,8 @@ const gameState = (() => {
     return {
         startGame,
         changeRound,
-        getCurrentPlayer
+        getCurrentPlayer,
+        hasEnded
     }
 })();
 
@@ -74,11 +88,13 @@ const gameBoard = (() => {
                               [3,6,9]];
         for (let i = 0; i < possibleWins.length; i++) {
             let mark = boardArray[possibleWins[i][0]-1].firstChild.textContent;
+            if (mark === '') continue;
             let winner = true;
+            console.log(possibleWins[i]);
             for (let j = 0; j < possibleWins[i].length; j++) {
+                console.log(`initial mark is ${mark}`);
                 if (mark !== boardArray[possibleWins[i][j]-1].firstChild.textContent) {
                     winner = false;
-                    continue;
                 }
             }
             if (winner === true) {
@@ -103,6 +119,7 @@ const gameController = (() => {
         board[i].addEventListener('click', function(e) { handlePlay(e.currentTarget.id) });
     }
     const handlePlay = (id) => {
+        if (gameState.hasEnded()) return;
         const cell = gameBoard.getCell(id);
         if (cell.textContent !== '') return;
         const player = gameState.getCurrentPlayer();
