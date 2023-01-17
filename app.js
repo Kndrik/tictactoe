@@ -8,8 +8,8 @@ const playerFactory = (name, mark) => {
 }
 
 const gameState = (() => {
-    let playerOne = playerFactory('Jim', 'X');
-    let playerTwo = playerFactory('Dwight', 'O');
+    let playerOne;
+    let playerTwo;
     let currentPlayer;
     let roundPlayed = 0;
     let gameEnded = false;
@@ -34,7 +34,7 @@ const gameState = (() => {
     let form = document.querySelector('form');
     form.onsubmit = startGame;
 
-    const displayWinner = (player) => {
+    const displayWinner = () => {
         resultDiv.textContent = gameBoard.checkForWinner() === playerOne.getMark() ? `${playerOne.getName()} won!` : `${playerTwo.getName()} won!`;
     }
 
@@ -147,7 +147,6 @@ const gameBoard = (() => {
         document.querySelector('.bottom button.reset').hidden = false;
         document.querySelector('.bottom button.change-players').hidden = false;
         document.querySelector('.result').hidden = false;
-
     }
 
     return {
